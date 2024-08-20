@@ -48,10 +48,10 @@ resource "aws_route_table" "private_route_table" {
   tags = {
     Name = "rds-private-route-table"
   }
-  route = {
-    cidr_block = "0.0.0.0/0"
+  route = [{
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat.id
-  }
+  }]
 }
 
 # Route Table Associations for Private Subnets (if not already created)
