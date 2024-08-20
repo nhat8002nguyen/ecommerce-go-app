@@ -211,12 +211,16 @@ resource "aws_ecs_task_definition" "ecommerce_app_task" {
     log_configuration = {
       log_driver = "awslogs"
       options = {
-        awslogs-group         = aws_cloudwatch_log_group.my_log_group.name
+        awslogs-group         = aws_cloudwatch_log_group.main_log_group.name
         awslogs-region        = "ap-southeast-1" # Replace with your desired region
         awslogs-stream-prefix = "ecs"
       }
     }
   }])
+}
+
+resource "aws_cloudwatch_log_group" "main_log_group" {
+  name = "/ecs/main_task" # Adjust the name as needed
 }
 
 resource "aws_ecs_service" "ecommerce_app_service" {
@@ -396,7 +400,7 @@ resource "aws_ecs_task_definition" "ecommerce_app_migration_task" {
     log_configuration = {
       log_driver = "awslogs"
       options = {
-        awslogs-group         = aws_cloudwatch_log_group.my_log_group.name
+        awslogs-group         = aws_cloudwatch_log_group.migration_log_group.name
         awslogs-region        = "ap-southeast-1" # Replace with your desired region
         awslogs-stream-prefix = "ecs"
       }
@@ -404,8 +408,8 @@ resource "aws_ecs_task_definition" "ecommerce_app_migration_task" {
   }])
 }
 
-resource "aws_cloudwatch_log_group" "my_log_group" {
-  name = "/ecs/my_task" # Adjust the name as needed
+resource "aws_cloudwatch_log_group" "migration_log_group" {
+  name = "/ecs/migration_task" # Adjust the name as needed
 }
 
 resource "aws_ecs_service" "ecommerce_migration_service" {
