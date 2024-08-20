@@ -48,6 +48,10 @@ resource "aws_route_table" "private_route_table" {
   tags = {
     Name = "rds-private-route-table"
   }
+  route = {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
 }
 
 # Route Table Associations for Private Subnets (if not already created)
@@ -250,6 +254,17 @@ resource "aws_subnet" "public" {
   tags = {
     Name = "bastion-public-subnet"
   }
+}
+
+# Create an Elastic IP for the NAT Gateway
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+}
+
+# Create a NAT Gateway
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.public.id
 }
 
 # Internet Gateway for Public Subnet
