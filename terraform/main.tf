@@ -12,6 +12,28 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
 }
 
+# This subnet is used for bastion host to connect to out private ECS, RDS.
+resource "aws_subnet" "public" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = "10.0.1.0/24"
+  availability_zone       = "ap-southeast-1a"
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "bastion-public-subnet"
+  }
+}
+
+# Create an Elastic IP for the NAT Gateway
+resource "aws_eip" "nat_eip" {
+  domain = "vpc"
+}
+
+# Create a NAT Gateway
+resource "aws_nat_gateway" "nat" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.public.id
+}
+
 # Private Subnets for RDS
 resource "aws_subnet" "private_subnet_rds_1" {
   vpc_id            = aws_vpc.main.id
@@ -48,10 +70,10 @@ resource "aws_route_table" "private_route_table" {
   tags = {
     Name = "rds-private-route-table"
   }
-  route = [{
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_nat_gateway.nat.id
-  }]
+  route = {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat.id
+  }
 }
 
 # Route Table Associations for Private Subnets (if not already created)
@@ -245,27 +267,6 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   ]
 }
 
-# This subnet is used for bastion host to connect to out private ECS, RDS.
-resource "aws_subnet" "public" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "ap-southeast-1a"
-  map_public_ip_on_launch = true
-  tags = {
-    Name = "bastion-public-subnet"
-  }
-}
-
-# Create an Elastic IP for the NAT Gateway
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-}
-
-# Create a NAT Gateway
-resource "aws_nat_gateway" "nat" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id     = aws_subnet.public.id
-}
 
 # Internet Gateway for Public Subnet
 resource "aws_internet_gateway" "gw" {
