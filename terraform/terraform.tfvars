@@ -8,4 +8,3 @@ db_name            = "ecommerce_app"
 db_username        = "nhatnguyen"
 db_password        = "samplepassword"
 db_driver          = "postgres"
-local_ips          = ["42.115.164.145/32"]

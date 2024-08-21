@@ -8,7 +8,7 @@ docker run --rm -p 9090:9090 -e DEBUG=True \
            -e DATABASE_USER=nhatnguyen \
            -e DATABASE_PASS=123 \
            -e DATABASE_NAME=ecommerce_app \
-           ecommerce-go-app
+           ecommerce-app
            
 // command to run migration locally.
 docker run --rm -e DEBUG=True \
