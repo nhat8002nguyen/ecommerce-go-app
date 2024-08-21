@@ -163,8 +163,8 @@ resource "aws_ecs_task_definition" "ecommerce_app_task" {
   container_definitions = jsonencode([{
     name      = "ecommerce-app-container"
     image     = var.ecommerce_app_ecr_uri
-    cpu       = 256
-    memory    = 512
+    cpu       = 2048
+    memory    = 4096
     essential = true
     portMappings = [{
       containerPort = 9090
