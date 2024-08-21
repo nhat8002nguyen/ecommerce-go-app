@@ -48,11 +48,6 @@ variable "db_driver" {
   type        = string
 }
 
-variable "local_ips" {
-  description = "The local ip addresses that can access the bastion host."
-  type        = list(string)
-}
-
 variable "AWS_SECRET_ACCESS_KEY" {
   description = "The secret access key to AWS"
   type        = string
